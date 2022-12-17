@@ -1,23 +1,42 @@
 var express = require('express');
 const { append } = require('express/lib/response');
 var router = express.Router();
+const blockExercises = require('../orm/block_exercises');
 const exercise = require('../orm/exercise');
-const training = require('../orm/training');
 const contactType = require('../orm/contact_type');
 const customer = require('../orm/customer');
 const customerType = require('../orm/customer_type');
 const exerciseType = require('../orm/exercise_type');
+const muscleGroup = require('../orm/muscle_group');
+const level = require('../orm/levels');
 const group = require('../orm/group');
+const restriction = require('../orm/restrictions');
 const routine = require('../orm/routine');
-const routineExercise = require('../orm/routine_exercise');
+const routineRestriction = require('../orm/routine_restrictions');
+const routineCycles = require('../orm/routine_cycle');
 const routineGroup = require('../orm/routine_group');
+const routineTypes = require('../orm/routine_types');
 const status = require('../orm/status');
 const statusType = require('../orm/status_type');
+const training = require('../orm/training');
+const trainingMethod = require('../orm/training_method');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
+
+/* Block Exercises. */
+router.route('/block-exercises')
+  .get((req,res)=>{
+    blockExercises.getBlockExercises(req,res);
+  }).post((req,res)=>{
+    blockExercises.addBlockExercises(req,res);
+  }).put((req,res)=>{
+    blockExercises.updateBlockExercises(req,res);
+  }).delete((req,res)=>{ 
+    blockExercises.deleteBlockExercises(req,res);
+  });
 
 /* Contact Type. */
 router.route('/contact-type')
@@ -91,28 +110,76 @@ router.route('/group')
     group.deleteGroup(req,res);
   });
 
-/* Routine. */
-router.route('/routine')
+  /* Group. */
+router.route('/levels')
+.get((req,res)=>{
+  level.getLevels(res);
+}).post((req,res)=>{
+  level.addLevels(req,res);
+}).put((req,res)=>{
+  level.updateLevels(req,res);
+}).delete((req,res)=>{ 
+  level.deleteLevels(req,res);
+});
+
+/* Muscle Group. */
+router.route('/muscle-group')
   .get((req,res)=>{
-    routine.getRoutine(res);
+    muscleGroup.getMuscleGroup(res);
   }).post((req,res)=>{
-    routine.addRoutine(req,res);
+    muscleGroup.addMuscleGroup(req,res);
   }).put((req,res)=>{
-    routine.updateRoutine(req,res);
+    muscleGroup.updateMuscleGroup(req,res);
   }).delete((req,res)=>{ 
-    routine.deleteRoutine(req,res);
+    muscleGroup.deleteMuscleGroup(req,res);
   });
 
-/* Routine Exercise. */
-router.route('/routine-exercise')
+/* Restrictions. */
+router.route('/restrictions')
+.get((req,res)=>{
+  restriction.getRestrictions(res);
+}).post((req,res)=>{
+  restriction.addRestrictions(req,res);
+}).put((req,res)=>{
+  restriction.updateRestrictions(req,res);
+}).delete((req,res)=>{ 
+  restriction.deleteRestrictions(req,res);
+});
+
+  /* Routine. */
+router.route('/routines')
   .get((req,res)=>{
-    routineExercise.getRoutine(res);
+    routine.getRoutines(res);
   }).post((req,res)=>{
-    routineExercise.addRoutine(req,res);
+    routine.addRoutines(req,res);
   }).put((req,res)=>{
-    routineExercise.updateRoutine(req,res);
+    routine.updateRoutines(req,res);
   }).delete((req,res)=>{ 
-    routineExercise.deleteRoutine(req,res);
+    routine.deleteRoutines(req,res);
+  });
+
+    /* Routine-restictions */
+router.route('/routine-restrictions')
+.get((req,res)=>{
+  routineRestriction.getRoutineRestrictions(res);
+}).post((req,res)=>{
+  routineRestriction.addRoutineRestrictions(req,res);
+}).put((req,res)=>{
+  routineRestriction.updateRoutineRestrictions(req,res);
+}).delete((req,res)=>{ 
+  routineRestriction.deleteRoutineRestrictions(req,res);
+});
+
+/* Routine Exercise. */
+router.route('/routine-cycles')
+  .get((req,res)=>{
+    routineCycles.getRoutineCycle(req,res);
+  }).post((req,res)=>{
+    routineCycles.addRoutineCycle(req,res);
+  }).put((req,res)=>{
+    routineCycles.updateRoutineCycle(req,res);
+  }).delete((req,res)=>{ 
+    routineCycles.deleteRoutineCycle(req,res);
   });
 
 /* Routine Groups. */
@@ -126,6 +193,18 @@ router.route('/routine-group')
   }).delete((req,res)=>{ 
     routineGroup.deleteRoutineGroup(req,res);
   });
+
+  /* Routine Types. */
+router.route('/routine-types')
+.get((req,res)=>{
+  routineTypes.getRoutineTypes(res);
+}).post((req,res)=>{
+  routineTypes.addRoutineTypes(req,res);
+}).put((req,res)=>{
+  routineTypes.updateRoutineTypes(req,res);
+}).delete((req,res)=>{ 
+  routineTypes.deleteRoutineTypes(req,res);
+});
 
 /* Status. */
 router.route('/status')
@@ -161,6 +240,18 @@ router.route('/trainings')
     training.updateTrainings(req,res);
   }).delete((req,res)=>{ 
     training.deleteTrainings(req,res);
+  });
+
+  /* Trainings method. */
+router.route('/trainings-method')
+  .get((req,res)=>{
+    trainingMethod.getTrainingMethod(res);
+  }).post((req,res)=>{
+    trainingMethod.addTrainingMethod(req,res);
+  }).put((req,res)=>{
+    trainingMethod.updateTrainingMethod(req,res);
+  }).delete((req,res)=>{ 
+    trainingMethod.deleteTrainingMethod(req,res);
   });
 
 module.exports = router;

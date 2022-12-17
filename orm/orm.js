@@ -22,8 +22,6 @@ const connect = () => {
         });
 }
 
-
-
 const getExercises = (res) => {
     const exercises = Exercise.findAll();
     exercises.then( exercises => {

@@ -1,7 +1,9 @@
 const conn = require('./connection');
 
 const getExerciseType = (res) => {
-    const exerciseType = conn.ExerciseType.findAll();
+    const exerciseType = conn.ExerciseType.findAll({
+        attributes: [['id_exercise_type', 'id'],'name','id_training','id_creator'] //id, first AS firstName
+      });
     exerciseType.then( exerciseType => {
         res.status(200).json(exerciseType);
     }).catch((err) => {

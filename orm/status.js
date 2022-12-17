@@ -1,7 +1,9 @@
 const conn = require('./connection');
 
 const getStatus = (res) => {
-    const status = conn.Status.findAll();
+    const status = conn.Status.findAll({
+        attributes: [['id_status', 'id'],'name','createdat','updatedat','id_status_type']
+      });
     status.then( status => {
         res.status(200).json(status);
     }).catch((err) => {

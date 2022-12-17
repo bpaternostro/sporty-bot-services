@@ -11,7 +11,6 @@ const sequelize = new Sequelize(database, user, password, {
     dialect: 'postgres'
   });
 
-
 const connect = () => {
     console.log("we are here");
     const con = sequelize.authenticate((err,data) => {
@@ -23,6 +22,68 @@ const connect = () => {
     return con;
 }
 
+const BlockExercises = sequelize.define('block_exercises', {
+  // Model attributes are defined here
+  id_block_routine: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true
+  },
+  id_routine: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'routines',
+      key: 'id_routine',
+   }
+  },
+  id_exercise: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'exercises',
+      key: 'id_exercise',
+   }
+  },
+  block: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  day_of_week: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  serie: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  weight: {
+    type: DataTypes.NUMBER,
+    allowNull: false
+  },
+  reps: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  observation: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  pause: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  createdat: {
+      type: DataTypes.DATE,
+      allowNull: false
+  },
+  updatedat: {
+      type: DataTypes.DATE,
+      allowNull: false
+  }
+},{
+timestamps: false
+});
 
 const Contact_type = sequelize.define('customer', {
     // Model attributes are defined here
@@ -164,14 +225,19 @@ const Exercise = sequelize.define('exercises', {
         references: 'EXERCISE_TYPES', 
         referencesKey: 'id_exercise_type'
     },
+    id_muscle_group:{
+      type: DataTypes.ARRAY({ type: DataTypes.UUID }),
+      references: { model: 'MuscleGroup', key: 'id_muscle_group' },
+      allowNull: false
+  },
     id_creator:{
         type: DataTypes.INTEGER,
         allowNull: false,
         references: 'CUSTOMERS', 
         referencesKey: 'id_customer'
     },
-    details:{
-        type: DataTypes.INTEGER,
+    description:{
+        type: DataTypes.STRING,
         allowNull: false
     }
   },{
@@ -228,11 +294,11 @@ const ExerciseType = sequelize.define('exercise_type', {
       type: DataTypes.STRING,
       allowNull: false
     },
-    createdAt: {
+    createdat: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    updatedAt: {
+    updatedat: {
         type: DataTypes.DATE,
         allowNull: false
     },
@@ -247,16 +313,126 @@ const ExerciseType = sequelize.define('exercise_type', {
         allowNull: false,
         references: 'TRAININGS', 
         referencesKey: 'id_training'
-    },
-    details: {
-        type: DataTypes.STRING,
-        allowNull: true
     }
   },{
     timestamps: false
   });
 
-const Routines = sequelize.define('routines', {
+const Levels = sequelize.define('levels', {
+    // Model attributes are defined here
+    id_level: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
+  },{
+    timestamps: false
+  });
+
+const MuscleGroup = sequelize.define('muscle_group', {
+    // Model attributes are defined here
+    id_muscle_group: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    id_muscle_group_type: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: 'MuscleGroupType', 
+      referencesKey: 'id_muscle_group_type'
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+  },{
+    timestamps: false,
+    freezeTableName: true,
+    tableName: 'muscle_group'
+  });
+
+const MuscleGroupType = sequelize.define('muscle_group_type', {
+    // Model attributes are defined here
+    id_muscle_group_type: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+  },{
+    timestamps: false,
+    freezeTableName: true,
+    tableName: 'muscle_group_type'
+  });
+
+const Restriction = sequelize.define('restriction', {
+    // Model attributes are defined here
+    id_restriction: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
+  },{
+    timestamps: false,
+    tableName: 'restriction',
+    freezeTableName: true
+  });
+
+const Routine = sequelize.define('routine', {
     // Model attributes are defined here
     id_routine: {
       type: DataTypes.INTEGER,
@@ -268,11 +444,11 @@ const Routines = sequelize.define('routines', {
       type: DataTypes.STRING,
       allowNull: false
     },
-    createdAt: {
+    createdat: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    updatedAt: {
+    updatedat: {
         type: DataTypes.DATE,
         allowNull: false
     },
@@ -287,14 +463,68 @@ const Routines = sequelize.define('routines', {
         allowNull: false,
         references: 'CUSTOMERS', 
         referencesKey: 'id_customer'
+    },
+    id_system:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    id_cadence:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    warm_up:{
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    cardio:{
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    duration:{
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    pre_exhaustion:{
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    activation:{
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    rest_between_exercises:{
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    days:{
+      type: DataTypes.ARRAY({ type: DataTypes.UUID })
+    },
+    id_goal:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    id_level:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: 'levels', 
+      referencesKey: 'id_level'
+    },
+    id_routine_type:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: 'routines_types', 
+      referencesKey: 'id_routine_type'
     }
+    
   },{
-    timestamps: false
+    timestamps: false,
+    tableName: 'routine',
+    freezeTableName: true
   });
 
-const RoutinesExercises = sequelize.define('routines_exercises', {
+const RoutinesCycles = sequelize.define('routines_cycles', {
     // Model attributes are defined here
-    id_routine_exercise: {
+    id_routine_cycle: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
@@ -306,25 +536,28 @@ const RoutinesExercises = sequelize.define('routines_exercises', {
       references: 'Routines', 
       referencesKey: 'id_routine'
     },
-    id_exercise: {
+    block: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: 'Exercises', 
         referencesKey: 'id_exercise'
       },
-    createdAt: {
+    createdat: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    updatedAt: {
+    updatedat: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    id_status: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: 'STATUS', 
-        referencesKey: 'id_status'
+    day_of_week: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    exercises:{
+      type: DataTypes.ARRAY({ type: DataTypes.UUID }),
+      references: { model: 'Exercise', key: 'id_exercise' },
+      allowNull: false
     }
   },{
     timestamps: false
@@ -368,6 +601,29 @@ const RoutinesGroups = sequelize.define('routines_groups', {
     timestamps: false
   });
 
+const RoutinesTypes = sequelize.define('routines_types', {
+    // Model attributes are defined here
+    id_routine_type: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
+  },{
+    timestamps: false
+  });
+
 const Status = sequelize.define('status', {
     // Model attributes are defined here
     id_status: {
@@ -379,11 +635,11 @@ const Status = sequelize.define('status', {
       type: DataTypes.STRING,
       allowNull: false
     },
-    createdAt: {
+    createdat: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    updatedAt: {
+    updatedat: {
         type: DataTypes.DATE,
         allowNull: false
     },
@@ -394,6 +650,8 @@ const Status = sequelize.define('status', {
         referencesKey: 'id_status_type'
     }
   },{
+    freezeTableName: true,
+    tableName: 'status',
     timestamps: false
   });
 
@@ -428,6 +686,12 @@ const Training = sequelize.define('training', {
       primaryKey: true,
       autoIncrement: true
     },
+    id_training_method: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: 'TrainingMethod', 
+      referencesKey: 'id_training_method'
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false
@@ -454,19 +718,99 @@ const Training = sequelize.define('training', {
   },{
     timestamps: false
   });
-  
+
+const TrainingMethod = sequelize.define('training_method', {
+    // Model attributes are defined here
+    id_training_method: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    id_creator: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: 'CUSTOMERS', 
+        referencesKey: 'id_customer'
+    },
+    details: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+
+  },{
+    timestamps: false
+  });
+
+const RoutineRestrictions = sequelize.define('routine_restrictions', {
+    id_routine_restriction: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    id_routine: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    id_restriction: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    createdat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    updatedat: {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
+  },{
+    timestamps: false,
+    tableName: 'routine_restrictions',
+    freezeTableName: true
+  });
+
+BlockExercises.hasOne(Exercise , {foreignKey : 'id_exercise', sourceKey: "id_exercise"});
+BlockExercises.hasOne(Routine, {foreignKey : 'id_routine', sourceKey: "id_routine"});
+Routine.hasOne(Status, {foreignKey : 'id_status', sourceKey: "id_status"});
+//TODO check way is not working association
+Routine.belongsToMany(Restriction, {through: RoutineRestrictions, foreignKey : 'id_routine'});
+Restriction.belongsToMany(Routine, {through: RoutineRestrictions, foreignKey : 'id_restriction'});
+Exercise.hasOne(Status, {foreignKey : 'id_status', sourceKey: "id_status"});
+
 module.exports = {
     connect,
+    BlockExercises,
     Contact_type,
     Customer,
     CustomerType,
     Exercise,
     ExerciseType,
     Group,
-    Routines,
-    RoutinesExercises,
+    Levels,
+    MuscleGroup,
+    MuscleGroupType,
+    Restriction,
+    Routine,
+    RoutinesCycles,
     RoutinesGroups,
+    RoutineRestrictions,
+    RoutinesTypes,
     Status,
     StatusType,
     Training,
+    TrainingMethod,
 }
